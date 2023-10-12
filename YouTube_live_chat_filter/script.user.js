@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube live chat filter
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  This script allows you to apply custom filters on live chat messages and redirect them to special popup window
 // @author       Asethone
 // @match        https://www.youtube.com/live_chat*
@@ -14,7 +14,7 @@
 (function () {
     'use strict'
 
-    console.log('Script was started');
+    console.log('SCRIPT IS WORKING...');
     // Data
     let isActive = false;       // is message tracking active
     let viewWindow = null;      // view popup window
