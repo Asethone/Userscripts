@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube live chat filter
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.2.1
 // @description  This script allows you to apply custom filters on live chat messages and redirect them to special popup window
 // @author       Asethone
 // @match        https://www.youtube.com/live_chat*
@@ -18,7 +18,6 @@
     // Data
     let isActive = false;       // is message tracking active
     let viewWindow = null;      // view popup window
-    let msgList = document.querySelector('#chat #items');
     // Button colors
     const statusColor = { false: '#3e3e3e', true: '#ea3322' };
     // Append button to header
@@ -138,31 +137,39 @@
             viewWindow = null;
         });
     }
+    // Filter function: takes message string and returns true if message should be handled
+    let shouldHandled = function(message) {
+        // Handle all messages
+        return true;
+    }
     // Scrap chat messages
+    const msgList = document.querySelector('#chat #items');
     const onAppend = function (appendedNode) {
-        // TODO: убрать проверку и вызывать только когда isActive
         if (viewWindow) {
             // timeout just in case images src are not yet loaded correctly
             setTimeout(() => {
-                const msg = {
-                    imgSrc: appendedNode.querySelector('#img').getAttribute('src'),
-                    author: appendedNode.querySelector('#author-name').textContent,
-                    message: (() => {
-                        const elMsg = appendedNode.querySelector('#message');
-                        let strMsg = '';
-                        for (const node of elMsg.childNodes) {
-                            if (node.nodeType === Node.TEXT_NODE) {
-                                strMsg += node.textContent;
-                            } else if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'IMG') {
-                                let emoji = node.getAttribute('alt');
-                                if (emoji)
-                                    strMsg += emoji;
-                            }
+                const message = (() => {
+                    const elMsg = appendedNode.querySelector('#message');
+                    let strMsg = '';
+                    for (const node of elMsg.childNodes) {
+                        if (node.nodeType === Node.TEXT_NODE) {
+                            strMsg += node.textContent;
+                        } else if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'IMG') {
+                            let emoji = node.getAttribute('alt');
+                            if (emoji)
+                                strMsg += emoji;
                         }
-                        return strMsg;
-                    })()
-                };
-                viewWindow.addMessage(msg.imgSrc, msg.author, msg.message);
+                    }
+                    return strMsg;
+                })();
+                // returns if the message shouldn't be handled
+                if (!shouldHandled(message))
+                    return;
+                // get author image and name
+                const imgSrc = appendedNode.querySelector('#img').getAttribute('src');
+                const author = appendedNode.querySelector('#author-name').textContent;
+                // send message to popup window
+                viewWindow.addMessage(imgSrc, author, message);
             }, 100);
         }
     };
