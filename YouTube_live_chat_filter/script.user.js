@@ -3,9 +3,11 @@
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  This script allows you to apply custom filters on live chat messages and redirect them to special popup window
-// @author       asethone
+// @author       Asethone
 // @match        https://www.youtube.com/live_chat*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
+// @updateURL    https://github.com/Asethone/Userscripts/raw/main/YouTube_live_chat_filter/script.user.js
+// @downloadURL  https://github.com/Asethone/Userscripts/raw/main/YouTube_live_chat_filter/script.user.js
 // @grant        none
 // ==/UserScript==
 
