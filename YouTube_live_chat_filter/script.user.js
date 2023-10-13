@@ -137,10 +137,10 @@
             viewWindow = null;
         });
     }
-    // Filter function: takes message string and returns true if message should be handled
-    let shouldHandled = function(message) {
-        // Handle all messages
-        return true;
+    // Filter function that takes message string and returns its part that should be showed (return null or empty string to hide the message)
+    let filterMessage = function(message) {
+        // Handle whole messages
+        return message;
     }
     // Scrap chat messages
     const msgList = document.querySelector('#chat #items');
@@ -163,13 +163,14 @@
                     return strMsg;
                 })();
                 // returns if the message shouldn't be handled
-                if (!shouldHandled(message))
+                const messageFiltered = filterMessage(message);
+                if (!messageFiltered)
                     return;
                 // get author image and name
                 const imgSrc = appendedNode.querySelector('#img').getAttribute('src');
                 const author = appendedNode.querySelector('#author-name').textContent;
                 // send message to popup window
-                viewWindow.addMessage(imgSrc, author, message);
+                viewWindow.addMessage(imgSrc, author, messageFiltered);
             }, 100);
         }
     };
