@@ -1,4 +1,5 @@
 # Userscripts
-The repo with my personal userscripts.
+This repo contains my personal userscripts (only Chrome browser currently supported).
 
-If you want, you cat install them with Tampermonkey.
+# Installation
+You can install userscripts with Tampermonkey by clicking on "Raw" button at desired-script-name.user.js code preview page.
