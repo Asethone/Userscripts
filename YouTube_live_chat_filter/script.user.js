@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube live chat message filter
 // @namespace    https://github.com/Asethone/Userscripts/tree/main/YouTube_live_chat_filter/
-// @version      0.1
+// @version      0.1.1
 // @description  This script allows you to apply custom filters on live chat messages and redirect them to special popup window
 // @author       Asethone
 // @match        https://www.youtube.com/live_chat*
@@ -137,8 +137,8 @@
             viewWindow = null;
         });
     }
-    // Filter function that takes message string and returns its part that should be showed (return null or empty string to hide the message)
-    let filterMessage = function(message) {
+    // Filter function takes a message string and returns its part (or parts as an array) that should be showed in popup (return any false value to hide the message completely)
+    const filterMessage = function(message) {
         // Handle whole messages
         return message;
     }
@@ -163,14 +163,20 @@
                     return strMsg;
                 })();
                 // filter message
-                const messageFiltered = filterMessage(message);
-                if (!messageFiltered)
+                const messageContents = filterMessage(message);
+                if (!messageContents)
                     return;
                 // get author image and name
                 const imgSrc = appendedNode.querySelector('#img').getAttribute('src');
                 const author = appendedNode.querySelector('#author-name').textContent;
                 // send message to popup window
-                viewWindow.addMessage(imgSrc, author, messageFiltered);
+                if (Array.isArray(messageContents)) {
+                    for (const content of messageContents) {
+                        viewWindow.addMessage(imgSrc, author, content);
+                    }
+                } else {
+                    viewWindow.addMessage(imgSrc, author, messageContents);
+                }
             }, 100);
         }
     };
