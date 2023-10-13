@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         YouTube live chat filter
+// @name         YouTube live chat GD level IDs
 // @namespace    http://tampermonkey.net/
-// @version      0.2.1
+// @version      0.1
 // @description  Redirect live chat messages with only GD level identificators to special popup window
 // @author       Asethone
 // @match        https://www.youtube.com/live_chat*
