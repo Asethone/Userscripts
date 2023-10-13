@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         YouTube live chat filter
+// @name         YouTube live chat message filter
 // @namespace    https://github.com/Asethone/Userscripts/tree/main/YouTube_live_chat_filter/
 // @version      0.1
 // @description  This script allows you to apply custom filters on live chat messages and redirect them to special popup window
@@ -162,7 +162,7 @@
                     }
                     return strMsg;
                 })();
-                // returns if the message shouldn't be handled
+                // filter message
                 const messageFiltered = filterMessage(message);
                 if (!messageFiltered)
                     return;

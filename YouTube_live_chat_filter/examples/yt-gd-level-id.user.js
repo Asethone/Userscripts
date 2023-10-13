@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         YouTube live chat GD level IDs
+// @name         YouTube live chat filter GD level IDs
 // @namespace    https://github.com/Asethone/Userscripts/tree/main/YouTube_live_chat_filter/
 // @version      0.1
 // @description  Redirect live chat messages with only GD level identificators to special popup window
@@ -137,13 +137,13 @@
             viewWindow = null;
         });
     }
-    // Filter function: takes message string and returns true if message should be handled
+    // Filter function that takes message string and returns its part that should be showed (return null or empty string to hide the message)
     let ids = new Set();
-    let shouldHandled = function(message) {
+    let filterMessage = function(message) {
         let id = message.match(/(?<!\d)\d{6,9}(?!\d)/);
-        if (id && !ids.has(id)) {
-            ids.add(id);
-            return true;
+        if (id && !ids.has(id[0])) {
+            ids.add(id[0]);
+            return id[0];
         }
         return false;
     }
@@ -167,14 +167,15 @@
                     }
                     return strMsg;
                 })();
-                // returns if the message shouldn't be handled
-                if (!shouldHandled(message))
+                // filter message
+                const messageFiltered = filterMessage(message);
+                if (!messageFiltered)
                     return;
                 // get author image and name
                 const imgSrc = appendedNode.querySelector('#img').getAttribute('src');
                 const author = appendedNode.querySelector('#author-name').textContent;
                 // send message to popup window
-                viewWindow.addMessage(imgSrc, author, message);
+                viewWindow.addMessage(imgSrc, author, messageFiltered);
             }, 100);
         }
     };
