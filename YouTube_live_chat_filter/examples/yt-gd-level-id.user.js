@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        YouTube live chat filter GD level IDs
 // @namespace   https://github.com/Asethone/Userscripts/tree/main/YouTube_live_chat_filter/
-// @version     0.1.5
+// @version     0.1.6
 // @description Redirect live chat messages with only GD level identificators to special popup window
 // @author      Asethone
 // @match       https://www.youtube.com/live_chat*
