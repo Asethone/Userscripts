@@ -6,10 +6,10 @@
 // @author      Asethone
 // @match       https://www.youtube.com/live_chat*
 // @icon        https://www.google.com/s2/favicons?sz=64&domain=youtube.com
-// @require     https://github.com/Asethone/Userscripts/raw/main/YouTube_live_chat_filter/script.user.js
 // @updateURL   https://github.com/Asethone/Userscripts/raw/main/YouTube_live_chat_filter/examples/yt-gd-level-id.user.js
 // @downloadURL https://github.com/Asethone/Userscripts/raw/main/YouTube_live_chat_filter/examples/yt-gd-level-id.user.js
 // @resource    view_html   https://github.com/Asethone/Userscripts/raw/main/YouTube_live_chat_filter/view.html
+// @require     https://github.com/Asethone/Userscripts/raw/main/YouTube_live_chat_filter/script.user.js
 // @grant       GM_getResourceText
 // ==/UserScript==
 
