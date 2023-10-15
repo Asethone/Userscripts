@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<head>
+    <title>View</title>
+    <style>
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+        }
+
+        p {
+            margin: 0;
+            overflow-wrap: break-word;
+        }
+
+        #list {
+            width: 100%;
+            min-width: 400px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        #list>div {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            font-family: Roboto, Arial, sans-serif;
+            font-size: 20px;
+            margin-bottom: 8px;
+            padding: 5px;
+            background-color: #ffffff1a;
+            border-radius: 5px;
+        }
+
+        #list img {
+            width: 30px;
+            height: 30px;
+            border-radius: 30px;
+            margin-right: 10px;
+        }
+
+        #list .author {
+            min-width: 120px;
+            width: 20%;
+            margin-right: 10px;
+            color: #9a9a9a;
+        }
+
+        #list .message {
+            width: 85%;
+            color: #e8e8e8;
+        }
+
+        #list button {
+            display: block;
+            width: 30px;
+            height: 30px;
+            border: none;
+            background-color: #ffffff25;
+            border-radius: 5px;
+            color: #e8e8e8;
+        }
+
+        #list button:hover {
+            background-color: #ff0000;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="list"></div>
+
+    <script>
+        console.log('RUNNING script in popup window...');
+
+        function addMessage(imgSrc, author, message) {
+            const list = document.getElementById('list');
+            const div = document.createElement('div');
+            const img = document.createElement('img');
+            img.setAttribute('src', imgSrc);
+            const pAuthor = document.createElement('p');
+            pAuthor.textContent = author;
+            pAuthor.className = 'author';
+            const pMessage = document.createElement('p');
+            pMessage.textContent = message;
+            pMessage.className = 'message';
+            const btn = document.createElement('button');
+            btn.textContent = '✕';
+            btn.onclick = () => { div.remove() };
+            div.appendChild(img);
+            div.appendChild(pAuthor);
+            div.appendChild(pMessage);
+            div.appendChild(btn);
+            list.appendChild(div);
+        }
+
+        function setOnCloseCallback(fn) {
+            window.onbeforeunload = () => fn();
+        }
+    </script>
+</body>
