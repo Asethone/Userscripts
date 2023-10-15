@@ -12,6 +12,7 @@
             margin: 0;
             overflow-wrap: break-word;
             cursor: pointer;
+            display: inline-block;
         }
 
         #list {
@@ -65,6 +66,26 @@
         #list button:hover {
             background-color: #ff0000;
         }
+
+        /* Animation classes */
+        .copied {
+            animation: 500ms copy;
+        }
+
+        /* Animation keyframes */
+        @keyframes copy {
+            from {
+                background-color: #ffffff1a;
+            }
+
+            50% {
+                background-color: #ffffff5b;
+            }
+
+            to {
+                background-color: #ffffff1a;
+            }
+        }
     </style>
 </head>
 
@@ -76,25 +97,35 @@
 
         function addMessage(imgSrc, author, message) {
             const list = document.getElementById('list');
-            const div = document.createElement('div');
+            const divItem = document.createElement('div');
+            const copyFunction = function(text) {
+                navigator.clipboard.writeText(text);
+                // pulse animation
+                divItem.classList.add('copied');
+                setTimeout(() => divItem.classList.remove('copied'), 500);
+            }
             const img = document.createElement('img');
             img.setAttribute('src', imgSrc);
+            const divAuthor = document.createElement('div');
             const pAuthor = document.createElement('p');
             pAuthor.textContent = author;
-            pAuthor.className = 'author';
-            pAuthor.onclick = () => navigator.clipboard.writeText(author);
+            pAuthor.onclick = () => copyFunction(author);
+            divAuthor.appendChild(pAuthor);
+            divAuthor.className = 'author'
+            const divMessage = document.createElement('div');
             const pMessage = document.createElement('p');
             pMessage.textContent = message;
-            pMessage.className = 'message';
-            pMessage.onclick = () => navigator.clipboard.writeText(message);
+            pMessage.onclick = () => copyFunction(message);
+            divMessage.appendChild(pMessage);
+            divMessage.className = 'message';
             const btn = document.createElement('button');
             btn.textContent = '✕';
-            btn.onclick = () => div.remove();
-            div.appendChild(img);
-            div.appendChild(pAuthor);
-            div.appendChild(pMessage);
-            div.appendChild(btn);
-            list.appendChild(div);
+            btn.onclick = () => divItem.remove();
+            divItem.appendChild(img);
+            divItem.appendChild(divAuthor);
+            divItem.appendChild(divMessage);
+            divItem.appendChild(btn);
+            list.appendChild(divItem);
         }
 
         function setOnCloseCallback(fn) {
