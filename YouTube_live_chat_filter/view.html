@@ -8,6 +8,10 @@
             color: #ffffff;
         }
 
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
         p {
             margin: 0;
             overflow-wrap: break-word;
@@ -22,7 +26,8 @@
             margin: 0 auto;
         }
 
-        #list>div {
+        #list .item {
+            position: relative;
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -72,6 +77,18 @@
             animation: 500ms copy;
         }
 
+        .added {
+            animation: 500ms add;
+        }
+
+        .removed {
+            animation: 400ms remove ease-out forwards;
+        }
+
+        .moved-up {
+            animation: 300ms move-up ease-out forwards;
+        }
+
         /* Animation keyframes */
         @keyframes copy {
             from {
@@ -79,11 +96,49 @@
             }
 
             50% {
-                background-color: #ffffff5b;
+                background-color: #ffffff44;
             }
 
             to {
                 background-color: #ffffff1a;
+            }
+        }
+
+        @keyframes add {
+            from {
+                top: 100px;
+                opacity: 0;
+            }
+
+            to {
+                top: 0px;
+                opacity: 100%;
+            }
+        }
+
+        @keyframes remove {
+            from {
+                top: 0px;
+                left: 0px;
+                rotate: 0deg;
+                opacity: 100%;
+            }
+
+            to {
+                top: var(--top);
+                left: var(--left);
+                rotate: var(--deg);
+                opacity: 0%;
+            }
+        }
+
+        @keyframes move-up {
+            from {
+                top: 0px;
+            }
+
+            to {
+                top: var(--top);
             }
         }
     </style>
@@ -97,12 +152,13 @@
 
         function addMessage(imgSrc, author, message) {
             const list = document.getElementById('list');
-            const divItem = document.createElement('div');
-            const copyFunction = function(text) {
+            const divItemAdded = document.createElement('div');
+            divItemAdded.className = 'item';
+            const copyFunction = function (text) {
                 navigator.clipboard.writeText(text);
                 // pulse animation
-                divItem.classList.add('copied');
-                setTimeout(() => divItem.classList.remove('copied'), 500);
+                divItemAdded.classList.add('copied');
+                setTimeout(() => divItemAdded.classList.remove('copied'), 500);
             }
             const img = document.createElement('img');
             img.setAttribute('src', imgSrc);
@@ -120,12 +176,39 @@
             divMessage.className = 'message';
             const btn = document.createElement('button');
             btn.textContent = '✕';
-            btn.onclick = () => divItem.remove();
-            divItem.appendChild(img);
-            divItem.appendChild(divAuthor);
-            divItem.appendChild(divMessage);
-            divItem.appendChild(btn);
-            list.appendChild(divItem);
+            btn.onclick = () => {
+                const heightRemoved = divItemAdded.getBoundingClientRect().height + 8;
+                // animate removed element
+                const dir = Math.floor(Math.random() * 2) * 2 - 1;    // -1 or 1
+                const intense = Math.random();
+                const deg = Math.floor(intense * 5) + 4;
+                divItemAdded.style.setProperty('--deg', (dir * deg).toString() + 'deg');
+                const top = Math.floor(intense * 40) + 50;
+                divItemAdded.style.setProperty('--top', (-top).toString() + 'px');
+                const left = Math.floor(intense * 40) + 40;
+                divItemAdded.style.setProperty('--left', (dir * left).toString() + 'px');
+                divItemAdded.classList.add('removed');
+                setTimeout(() => {
+                    // before removing the element remove animations from all items that positioned below
+                    for (let divItem = divItemAdded.nextSibling; divItem; divItem = divItem.nextSibling) {
+                        divItem.classList.remove('moved-up');
+                    }
+                    divItemAdded.remove();
+                }, 400);
+                // animate all items below removed element
+                for (let divItem = divItemAdded.nextSibling; divItem; divItem = divItem.nextSibling) {
+                    divItem.style.setProperty('--top', (-heightRemoved).toString() + 'px');
+                    divItem.classList.add('moved-up');
+                }
+            }
+            divItemAdded.appendChild(img);
+            divItemAdded.appendChild(divAuthor);
+            divItemAdded.appendChild(divMessage);
+            divItemAdded.appendChild(btn);
+            list.appendChild(divItemAdded);
+            // add animation
+            divItemAdded.classList.add('added');
+            setTimeout(() => divItemAdded.classList.remove('added'), 500);
         }
 
         function setOnCloseCallback(fn) {
