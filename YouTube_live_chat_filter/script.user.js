@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         YouTube live chat message filter
 // @namespace    https://github.com/Asethone/Userscripts/tree/main/YouTube_live_chat_filter/
-// @version      0.1.3
-// @description  This script allows you to apply custom filters on live chat messages and redirect them to special popup window
+// @version      0.1.4
+// @description  This script allows you to apply custom filter on live chat messages and redirect acquired data to a special popup window
 // @author       Asethone
 // @match        https://www.youtube.com/live_chat*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
@@ -10,6 +10,16 @@
 // @downloadURL  https://github.com/Asethone/Userscripts/raw/main/YouTube_live_chat_filter/script.user.js
 // @grant        none
 // ==/UserScript==
+
+/*
+ * Filter function for retrieving data from chat message
+ * @param   {String}    message Chat message
+ * @return  {Array}             Array of strings. Each string will be added to popup window as a separate message
+ */
+let filterMessage = function(message) {
+    // Handle whole messages
+    return [message];
+};
 
 (function () {
     'use strict'
@@ -139,11 +149,6 @@
             viewWindow = null;
         });
     }
-    // Filter function takes a message string and returns its part (or parts as an array) that should be showed in popup (return any false value to hide the message completely)
-    const filterMessage = function(message) {
-        // Handle whole messages
-        return message;
-    }
     // Scrap chat messages
     const msgList = document.querySelector('#chat #items');
     const onAppend = function (appendedNode) {
@@ -176,12 +181,8 @@
             const imgSrc = appendedNode.querySelector('#img').getAttribute('src');
             const author = appendedNode.querySelector('#author-name').textContent;
             // send message to popup window
-            if (Array.isArray(messageContents)) {
-                for (const content of messageContents) {
-                    viewWindow.addMessage(imgSrc, author, content);
-                }
-            } else {
-                viewWindow.addMessage(imgSrc, author, messageContents);
+            for (const content of messageContents) {
+                viewWindow.addMessage(imgSrc, author, content);
             }
         }, 100);
     };
