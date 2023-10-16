@@ -37,6 +37,7 @@
             padding: 5px;
             background-color: #ffffff1a;
             border-radius: 5px;
+            transition: background-color 500ms;
         }
 
         #list img {
@@ -83,6 +84,10 @@
         /* Animation classes */
         .copied {
             opacity: 50%;
+        }
+
+        #list .selected {
+            background-color: #ffffff38;
         }
 
         .added {
@@ -143,29 +148,51 @@
 
     <script>
         console.log('RUNNING script in popup window...');
+        // Data
+        let selectedItem = null;
+
+        function unselectItem() {
+            if (selectedItem)
+                selectedItem.classList.remove('selected');
+            selectedItem = null;
+        }
+
+        function selectItem(item) {
+            item.classList.add('selected');
+            selectedItem = item;
+        }
+
+        document.onkeydown = function (e) {
+            if (e.key === 'Escape') {
+                unselectItem();
+            }
+        }
 
         function addMessage(imgSrc, author, message) {
             const list = document.getElementById('list');
             const divItemAdded = document.createElement('div');
             divItemAdded.className = 'item';
-            const copyFunction = function (div, text) {
+            const onTextClick = function (div, text) {
                 navigator.clipboard.writeText(text);
                 // pulse animation
                 div.classList.add('copied');
                 setTimeout(() => div.classList.remove('copied'), 250);
+                // mark current item as selected
+                unselectItem();
+                selectItem(divItemAdded);
             }
             const img = document.createElement('img');
             img.setAttribute('src', imgSrc);
             const divAuthor = document.createElement('div');
             const pAuthor = document.createElement('p');
             pAuthor.textContent = author;
-            pAuthor.onclick = () => copyFunction(divAuthor, author);
+            pAuthor.onclick = () => onTextClick(divAuthor, author);
             divAuthor.appendChild(pAuthor);
             divAuthor.className = 'author'
             const divMessage = document.createElement('div');
             const pMessage = document.createElement('p');
             pMessage.textContent = message;
-            pMessage.onclick = () => copyFunction(divMessage, message);
+            pMessage.onclick = () => onTextClick(divMessage, message);
             divMessage.appendChild(pMessage);
             divMessage.className = 'message';
             const btn = document.createElement('button');
@@ -187,6 +214,8 @@
                     for (let divItem = divItemAdded.nextSibling; divItem; divItem = divItem.nextSibling) {
                         divItem.classList.remove('moved-up');
                     }
+                    if (divItemAdded === selectedItem)
+                        selectedItem = null;
                     divItemAdded.remove();
                 }, 400);
                 // animate all items below removed element
@@ -211,7 +240,7 @@
 
         // generates n messages
         function test(n) {
-            const getRandomString = function(length) {
+            const getRandomString = function (length) {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=';
                 let result = '';
                 for (let i = 0; i < length; i++) {
@@ -219,7 +248,7 @@
                 }
                 return result;
             }
-            
+
             for (let i = 0; i < n; i++) {
                 const nickname = getRandomString(Math.floor(Math.random() * 20) + 4);
                 const message = getRandomString(Math.floor(Math.random() * 100) + 1);
