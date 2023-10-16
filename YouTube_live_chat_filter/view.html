@@ -81,6 +81,32 @@
             background-color: #ff0000;
         }
 
+        /* Header */
+        #header {
+            width: 100%;
+            min-width: 400px;
+            max-width: 800px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 8px;
+        }
+
+        .header-button {
+            background-color: #464646;
+            font-family: Roboto, Arial, sans-serif;
+            font-size: 16px;
+            border-radius: 20px;
+            padding: 8px;
+            cursor: default;
+            user-select: none;
+        }
+
+        .header-button:hover {
+            background-color: #3a733e;
+        }
+
         /* Animation classes */
         .copied {
             opacity: 50%;
@@ -144,6 +170,9 @@
 </head>
 
 <body>
+    <div id="header">
+        <div class="header-button" id="btn-save">Save authors</div>
+    </div>
     <div id="list"></div>
 
     <script>
@@ -234,12 +263,29 @@
             setTimeout(() => divItemAdded.classList.remove('added'), 500);
         }
 
+        // fn() - function called on popup unload
         function setOnCloseCallback(fn) {
             window.onbeforeunload = () => fn();
         }
+        // fn() - returns all unique authors in an array
+        function setOnSaveCallback(fn) {
+            const btnSave = document.getElementById('btn-save');
+            btnSave.onclick = () => {
+                const link = document.createElement("a");
+                const content = fn();
+                for (let i = 0; i < content.length; i++) {
+                    content[i] += '\n';
+                }
+                const file = new Blob(content, { type: 'text/plain;charset=utf-8' });
+                link.href = URL.createObjectURL(file);
+                link.download = "authors.txt";
+                link.click();
+                URL.revokeObjectURL(link.href);
+            };
+        }
 
-        // generates n messages
-        function test(n) {
+        // generates n messages (for testing purposes)
+        function test(n = 10) {
             const getRandomString = function (length) {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=';
                 let result = '';

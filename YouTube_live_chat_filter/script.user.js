@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        YouTube live chat message filter
 // @namespace   https://github.com/Asethone/Userscripts/tree/main/YouTube_live_chat_filter/
-// @version     0.1.8
+// @version     0.1.9
 // @description This script allows you to apply custom filter on live chat messages and redirect acquired data to a special popup window
 // @author      Asethone
 // @match       https://www.youtube.com/live_chat*
@@ -27,8 +27,9 @@ let filterMessage = function(message) {
 
     console.log('RUNNING script.user.js...');
     // Data
-    let isActive = false;       // is message tracking active
-    let viewWindow = null;      // view popup window
+    let isActive = false;           // is message tracking active
+    let viewWindow = null;          // view popup window
+    const authorsSet = new Set();   // authors
     // Button colors
     const statusColor = { false: '#3e3e3e', true: '#ea3322' };
     // Append button to header
@@ -56,6 +57,10 @@ let filterMessage = function(message) {
         viewWindow.setOnCloseCallback(() => {
             updateStatus(false);
             viewWindow = null;
+        });
+        // Set popup's save button callback
+        viewWindow.setOnSaveCallback(() => {
+            return Array.from(authorsSet);
         });
     }
     // Scrap chat messages
@@ -92,6 +97,7 @@ let filterMessage = function(message) {
             // send message to popup window
             for (const content of messageContents) {
                 viewWindow.addMessage(imgSrc, author, content);
+                authorsSet.add(author);
             }
         }, 100);
     };
