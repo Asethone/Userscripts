@@ -54,7 +54,8 @@
         }
 
         #list .message {
-            width: 85%;
+            min-width: 180px;
+            width: 70%;
             color: #e8e8e8;
         }
 
@@ -62,6 +63,8 @@
             display: block;
             width: 30px;
             height: 30px;
+            padding: 0;
+            margin-left: 10px;
             border: none;
             background-color: #ffffff25;
             border-radius: 5px;
@@ -213,6 +216,24 @@
 
         function setOnCloseCallback(fn) {
             window.onbeforeunload = () => fn();
+        }
+
+        // generates n messages
+        function test(n) {
+            const getRandomString = function(length) {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=';
+                let result = '';
+                for (let i = 0; i < length; i++) {
+                    result += chars[Math.floor(Math.random() * chars.length)];
+                }
+                return result;
+            }
+            
+            for (let i = 0; i < n; i++) {
+                const nickname = getRandomString(Math.floor(Math.random() * 20) + 4);
+                const message = getRandomString(Math.floor(Math.random() * 100) + 1);
+                addMessage('https://icons.veryicon.com/png/o/miscellaneous/uhuibao_yb/debug.png', nickname, message);
+            }
         }
     </script>
 </body>
