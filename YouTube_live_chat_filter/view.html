@@ -46,6 +46,10 @@
             margin-right: 10px;
         }
 
+        #list .item div {
+            transition: opacity ease-out 150ms;
+        }
+
         #list .author {
             min-width: 120px;
             width: 20%;
@@ -77,7 +81,7 @@
 
         /* Animation classes */
         .copied {
-            animation: 500ms copy;
+            opacity: 50%;
         }
 
         .added {
@@ -93,20 +97,6 @@
         }
 
         /* Animation keyframes */
-        @keyframes copy {
-            from {
-                background-color: #ffffff1a;
-            }
-
-            50% {
-                background-color: #ffffff44;
-            }
-
-            to {
-                background-color: #ffffff1a;
-            }
-        }
-
         @keyframes add {
             from {
                 top: 100px;
@@ -157,24 +147,24 @@
             const list = document.getElementById('list');
             const divItemAdded = document.createElement('div');
             divItemAdded.className = 'item';
-            const copyFunction = function (text) {
+            const copyFunction = function (div, text) {
                 navigator.clipboard.writeText(text);
                 // pulse animation
-                divItemAdded.classList.add('copied');
-                setTimeout(() => divItemAdded.classList.remove('copied'), 500);
+                div.classList.add('copied');
+                setTimeout(() => div.classList.remove('copied'), 250);
             }
             const img = document.createElement('img');
             img.setAttribute('src', imgSrc);
             const divAuthor = document.createElement('div');
             const pAuthor = document.createElement('p');
             pAuthor.textContent = author;
-            pAuthor.onclick = () => copyFunction(author);
+            pAuthor.onclick = () => copyFunction(divAuthor, author);
             divAuthor.appendChild(pAuthor);
             divAuthor.className = 'author'
             const divMessage = document.createElement('div');
             const pMessage = document.createElement('p');
             pMessage.textContent = message;
-            pMessage.onclick = () => copyFunction(message);
+            pMessage.onclick = () => copyFunction(divMessage, message);
             divMessage.appendChild(pMessage);
             divMessage.className = 'message';
             const btn = document.createElement('button');
