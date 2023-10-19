@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        YouTube live chat message filter
 // @namespace   https://github.com/Asethone/Userscripts/tree/main/YouTube_live_chat_filter/
-// @version     0.1.9
+// @version     0.1.10
 // @description This script allows you to apply custom filter on live chat messages and redirect acquired data to a special popup window
 // @author      Asethone
 // @match       https://www.youtube.com/live_chat*
@@ -133,20 +133,18 @@ let filterMessage = function(message) {
         if (viewWindow)
             viewWindow.close();
     };
-    // Monkey patching window.open
-    const stdWinOpen = window.open;
-    window.open = function () {
-        const win = stdWinOpen.apply(this, arguments);
-        const onPopupLoad = () => {
-            if (win.location.href.match(/.*live_chat\?is_popout.*/)) {
-                // chat was opened by user in new window
+    // Disable tracking if chat is opened in new window
+    let observerPopup = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            console.log(mutation.target.classList);
+            if (!mutation.target.classList.contains('iron-selected')) {
                 updateStatus(false);
                 viewWindow = null;
             }
-            removeEventListener('load', onPopupLoad);
-        };
-        win.addEventListener('load', onPopupLoad);
-
-        return win;
-    };
+        }
+    });
+    const divChatContainer = document.getElementById('chat-messages');
+    observerPopup.observe(divChatContainer, {
+        attributeFilter: ["class"]
+    });
 })();
