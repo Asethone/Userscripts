@@ -6,6 +6,7 @@
         body {
             background-color: #0f0f0f;
             color: #ffffff;
+            margin: 0;
         }
 
         body::-webkit-scrollbar {
@@ -21,20 +22,28 @@
 
         #list {
             width: 100%;
-            min-width: 400px;
+            box-sizing: border-box;
+            min-width: 500px;
             max-width: 800px;
-            margin: 0 auto;
-            --hover-btn-bg-color: #ff0000;
+            padding: 0 8px 0 8px;
+            margin: 8px auto 0 auto;
+        }
+
+        #list .item-container {
+            position: relative;
+            /* margin-bottom: 8px;  - in height */
+            transition: height 300ms ease-out;
         }
 
         #list .item {
-            position: relative;
+            position: absolute;
+            box-sizing: border-box;
+            width: 100%;
             display: flex;
             flex-direction: row;
             align-items: center;
             font-family: Roboto, Arial, sans-serif;
             font-size: 20px;
-            margin-bottom: 8px;
             padding: 5px;
             background-color: #ffffff1a;
             border-radius: 5px;
@@ -79,18 +88,18 @@
         }
 
         #list button:hover {
-            background-color: var(--hover-btn-bg-color);
+            background-color: #ff0000;
         }
 
         /* Header */
         #header {
             width: 100%;
+            margin-top: 8px;
             min-width: 400px;
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: center;
-            padding-bottom: 8px;
         }
 
         .header-button {
@@ -124,10 +133,6 @@
             animation: 400ms remove ease-out forwards;
         }
 
-        .moved-up {
-            animation: 300ms move-up ease-out forwards;
-        }
-
         /* Animation keyframes */
         @keyframes add {
             from {
@@ -154,16 +159,6 @@
                 left: var(--left-removing);
                 rotate: var(--deg-removing);
                 opacity: 0%;
-            }
-        }
-
-        @keyframes move-up {
-            from {
-                top: 0px;
-            }
-
-            to {
-                top: var(--top-moving);
             }
         }
     </style>
@@ -195,10 +190,21 @@
             if (e.key === 'Escape') {
                 unselectItem();
             }
-        }
+        };
+
+        window.onresize = function () {
+            if (window.innerWidth < 400)
+                return;
+            const list = document.getElementById('list');
+            for (const divItemContainer of list.childNodes) {
+                divItemContainer.style.height = `${divItemContainer.firstChild.getBoundingClientRect().height + 8}px`;
+            }
+        };
 
         function addMessage(imgSrc, author, message) {
             const list = document.getElementById('list');
+            const divItemContainer = document.createElement('div');
+            divItemContainer.className = 'item-container';
             const divItemAdded = document.createElement('div');
             divItemAdded.className = 'item';
             const onTextClick = function (div, text) {
@@ -232,33 +238,29 @@
                 const dir = Math.floor(Math.random() * 2) * 2 - 1;    // -1 or 1
                 const intense = Math.random();
                 const deg = Math.floor(intense * 5) + 4;
-                divItemAdded.style.setProperty('--deg-removing', (dir * deg).toString() + 'deg');
+                divItemAdded.style.setProperty('--deg-removing', `${dir * deg}deg`);
                 const top = Math.floor(intense * 40) + 50;
-                divItemAdded.style.setProperty('--top-removing', (-top).toString() + 'px');
+                divItemAdded.style.setProperty('--top-removing', `${-top}px`);
                 const left = Math.floor(intense * 40) + 40;
-                divItemAdded.style.setProperty('--left-removing', (dir * left).toString() + 'px');
+                divItemAdded.style.setProperty('--left-removing', `${dir * left}px`);
                 divItemAdded.classList.add('removed');
+                // animate container
+                divItemContainer.style.height = '0px';
                 setTimeout(() => {
-                    // before removing the element remove animations from all items that positioned below
-                    for (let divItem = divItemAdded.nextSibling; divItem; divItem = divItem.nextSibling) {
-                        divItem.classList.remove('moved-up');
-                    }
                     if (divItemAdded === selectedItem)
                         selectedItem = null;
-                    divItemAdded.remove();
+                    divItemContainer.remove();
                 }, 400);
-                // animate all items below removed element
-                list.style.setProperty('--top-moving', (-heightRemoved).toString() + 'px');
-                for (let divItem = divItemAdded.nextSibling; divItem; divItem = divItem.nextSibling) {
-                    divItem.classList.add('moved-up');
-                }
             }
             divItemAdded.appendChild(img);
             divItemAdded.appendChild(divAuthor);
             divItemAdded.appendChild(divMessage);
             divItemAdded.appendChild(btn);
-            list.appendChild(divItemAdded);
-            // add animation
+            divItemContainer.appendChild(divItemAdded);
+            list.appendChild(divItemContainer);
+            // set height ( +8px for bottom margin just for animating only height property )
+            divItemContainer.style.height = `${divItemAdded.getBoundingClientRect().height + 8}px`;
+            // animation for adding the element
             divItemAdded.classList.add('added');
             setTimeout(() => divItemAdded.classList.remove('added'), 500);
         }
@@ -301,5 +303,7 @@
                 addMessage('https://icons.veryicon.com/png/o/miscellaneous/uhuibao_yb/debug.png', nickname, message);
             }
         }
+
+        test();
     </script>
 </body>
