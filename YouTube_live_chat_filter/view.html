@@ -26,7 +26,7 @@
             min-width: 500px;
             max-width: 800px;
             padding: 0 8px 0 8px;
-            margin: 8px auto 0 auto;
+            margin: 8px auto 60px auto;
         }
 
         #list .item-container {
@@ -91,18 +91,25 @@
             background-color: #ff0000;
         }
 
-        /* Header */
-        #header {
+        /* Footer */
+        #footer {
             width: 100%;
-            margin-top: 8px;
-            min-width: 400px;
+            bottom: 0;
+            padding: 5px 8px 12px 8px;
+            background-color: #0f0f0f;
+            position: fixed;
+            min-width: 500px;
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: center;
+            border-image-source: linear-gradient(to top, #0f0f0f, #0f0f0f00);
+            border-image-slice: 100% 0 0 0;
+            border-image-outset: 30px;
+            border-image-width: 30px;
         }
 
-        .header-button {
+        .footer-button {
             background-color: #464646;
             font-family: Roboto, Arial, sans-serif;
             font-size: 16px;
@@ -112,8 +119,8 @@
             user-select: none;
         }
 
-        .header-button:hover {
-            background-color: #3a733e;
+        .footer-button:hover {
+            background-color: #757575;
         }
 
         /* Animation classes */
@@ -165,10 +172,10 @@
 </head>
 
 <body>
-    <div id="header">
-        <div class="header-button" id="btn-save">Save authors</div>
-    </div>
     <div id="list"></div>
+    <div id="footer">
+        <div class="footer-button" id="btn-save">Save authors</div>
+    </div>
 
     <script>
         console.log('RUNNING script in popup window...');
