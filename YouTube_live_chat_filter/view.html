@@ -24,6 +24,7 @@
             min-width: 400px;
             max-width: 800px;
             margin: 0 auto;
+            --hover-btn-bg-color: #ff0000;
         }
 
         #list .item {
@@ -78,7 +79,7 @@
         }
 
         #list button:hover {
-            background-color: #ff0000;
+            background-color: var(--hover-btn-bg-color);
         }
 
         /* Header */
@@ -149,9 +150,9 @@
             }
 
             to {
-                top: var(--top);
-                left: var(--left);
-                rotate: var(--deg);
+                top: var(--top-removing);
+                left: var(--left-removing);
+                rotate: var(--deg-removing);
                 opacity: 0%;
             }
         }
@@ -162,7 +163,7 @@
             }
 
             to {
-                top: var(--top);
+                top: var(--top-moving);
             }
         }
     </style>
@@ -231,11 +232,11 @@
                 const dir = Math.floor(Math.random() * 2) * 2 - 1;    // -1 or 1
                 const intense = Math.random();
                 const deg = Math.floor(intense * 5) + 4;
-                divItemAdded.style.setProperty('--deg', (dir * deg).toString() + 'deg');
+                divItemAdded.style.setProperty('--deg-removing', (dir * deg).toString() + 'deg');
                 const top = Math.floor(intense * 40) + 50;
-                divItemAdded.style.setProperty('--top', (-top).toString() + 'px');
+                divItemAdded.style.setProperty('--top-removing', (-top).toString() + 'px');
                 const left = Math.floor(intense * 40) + 40;
-                divItemAdded.style.setProperty('--left', (dir * left).toString() + 'px');
+                divItemAdded.style.setProperty('--left-removing', (dir * left).toString() + 'px');
                 divItemAdded.classList.add('removed');
                 setTimeout(() => {
                     // before removing the element remove animations from all items that positioned below
@@ -247,8 +248,8 @@
                     divItemAdded.remove();
                 }, 400);
                 // animate all items below removed element
+                list.style.setProperty('--top-moving', (-heightRemoved).toString() + 'px');
                 for (let divItem = divItemAdded.nextSibling; divItem; divItem = divItem.nextSibling) {
-                    divItem.style.setProperty('--top', (-heightRemoved).toString() + 'px');
                     divItem.classList.add('moved-up');
                 }
             }
