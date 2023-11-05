@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        YouTube live chat filter GD level IDs
 // @namespace   https://github.com/Asethone/Userscripts/tree/main/YouTube_live_chat_filter/
-// @version     0.1.12
+// @version     0.1.13
 // @description Redirect live chat messages with only GD level identificators to special popup window
 // @author      Asethone
 // @match       https://www.youtube.com/live_chat*
@@ -20,6 +20,7 @@
     // Set filter function
     const set = new Set();
     filterMessage = function(message) {
+        message = message.replaceAll(/(?<!\d{6,9}),(?!\d{6,9})/g, '');
         const ids = message.match(/(?<!\d)\d{6,9}(?!\d)/g);
         if (ids === null)
             return null;
