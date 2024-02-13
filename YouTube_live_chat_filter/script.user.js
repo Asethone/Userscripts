@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        YouTube live chat message filter
 // @namespace   https://github.com/Asethone/Userscripts/tree/main/YouTube_live_chat_filter/
-// @version     0.1.13
+// @version     1.14
 // @description This script allows you to apply custom filter on live chat messages and redirect acquired data to a special popup window
 // @author      Asethone
 // @match       https://www.youtube.com/live_chat*
@@ -63,8 +63,7 @@ let filterMessage = function(message) {
             return Array.from(authorsSet);
         });
     }
-    // Scrap chat messages
-    const msgList = document.querySelector('#chat #items');
+    // callback on message appearing
     const onAppend = function (appendedNode) {
         if (viewWindow === null)
             return;
@@ -110,7 +109,7 @@ let filterMessage = function(message) {
         }
     };
     // Create observer to watch for new chat messages
-    let observer = new MutationObserver(callback);
+    const observer = new MutationObserver(callback);    
     // Toggle status function
     function updateStatus(status) {
         isActive = status;
@@ -119,6 +118,7 @@ let filterMessage = function(message) {
         if (isActive) {
             if (!viewWindow)
                 createPopup();
+            const msgList = document.querySelector('#chat #items');
             observer.observe(msgList, { childList: true });
         } else {
             observer.disconnect();
@@ -145,5 +145,18 @@ let filterMessage = function(message) {
     const divChatContainer = document.getElementById('chat-messages');
     observerPopup.observe(divChatContainer, {
         attributeFilter: ["class"]
+    });
+    // Call updateStatus() if chat filter was changed from YT interface
+    const observerChatFilter = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            if (mutation.oldValue !== null) {
+                updateStatus(isActive);
+            }
+        }
+    });
+    const elChatRenderer = document.querySelector('#contents > yt-live-chat-renderer');
+    observerChatFilter.observe(elChatRenderer, {
+        attributeFilter: ["loading"],
+        attributeOldValue: true
     });
 })();
